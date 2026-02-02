@@ -29,43 +29,39 @@
             pointer-events: none; 
         }
 
-        /* กรอบวิดีโอสไตล์ Glassmorphism */
+        /* กรอบวิดีโอทรงแคปซูล Pill-shaped */
         .video-container {
             position: absolute;
-            top: 55%;
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 92vw;
+            width: 90vw;
             max-width: 850px;
+            height: auto; 
             z-index: 50;
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(45px) saturate(180%);
-            -webkit-backdrop-filter: blur(45px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 28px;
-            padding: 8px;
+            background: #000; 
+            border: 2px solid rgba(56, 189, 248, 0.4); 
+            border-radius: 60px; 
+            padding: 10px;
             transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-            opacity: 1;
+            box-shadow: 0 0 40px rgba(56, 189, 248, 0.25), inset 0 0 20px rgba(56, 189, 248, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .video-container.is-playing {
-            border-color: rgba(56, 189, 248, 0.4);
-            animation: videoPulse 3s infinite alternate ease-in-out;
-        }
-
-        @keyframes videoPulse {
-            0% { box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(56, 189, 248, 0.2); }
-            100% { box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), 0 0 50px rgba(56, 189, 248, 0.5); }
+            border-color: rgba(56, 189, 248, 0.7);
+            box-shadow: 0 0 60px rgba(56, 189, 248, 0.4), inset 0 0 30px rgba(56, 189, 248, 0.2);
         }
 
         .video-content {
             position: relative;
             width: 100%;
-            border-radius: 20px;
-            background: #000;
+            height: 100%;
+            border-radius: 50px;
             overflow: hidden;
+            background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -75,34 +71,42 @@
             width: 100%;
             height: auto;
             display: block;
-            border-radius: 18px;
-            object-fit: contain;
+            border-radius: 50px;
+            opacity: 0.6;
+            transition: opacity 0.8s ease;
         }
 
-        /* ส่วนควบคุมวิดีโอ */
+        .video-container.is-playing video {
+            opacity: 0.9;
+        }
+
+        /* ส่วนควบคุมวิดีโอ - ตั้งค่าให้หายไปอย่างสมบูรณ์ */
         .controls-overlay {
             position: absolute;
             inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: clamp(20px, 8vw, 50px);
+            gap: clamp(20px, 8vw, 60px);
             z-index: 60;
             opacity: 1;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(0, 0, 0, 0.3);
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease;
+            background: rgba(0, 0, 0, 0.45);
             pointer-events: auto;
         }
 
-        .video-container.is-playing .controls-overlay {
+        /* เมื่อวิดีโอเล่น และไม่มีคลาส show-ui ให้หายไปเลย */
+        .video-container.is-playing:not(.show-ui) .controls-overlay {
             opacity: 0;
+            background: rgba(0, 0, 0, 0);
             pointer-events: none;
         }
 
+        /* ปรับระดับความชัดเมื่อโชว์ UI */
         .video-container.show-ui .controls-overlay {
-            opacity: 1;
-            pointer-events: auto;
-            background: rgba(0, 0, 0, 0.45);
+            opacity: 1 !important;
+            background: rgba(0, 0, 0, 0.5) !important;
+            pointer-events: auto !important;
         }
 
         .control-btn {
@@ -113,22 +117,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             color: white;
             cursor: pointer;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             -webkit-tap-highlight-color: transparent;
         }
 
-        .control-btn:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.1); }
-        .play-btn { width: clamp(70px, 15vw, 85px); height: clamp(70px, 15vw, 85px); }
-        .skip-btn { width: clamp(45px, 12vw, 55px); height: clamp(45px, 12vw, 55px); background: rgba(255, 255, 255, 0.05); }
-        .control-btn svg { fill: currentColor; width: 40%; height: 40%; }
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.15);
+            border-color: rgba(56, 189, 248, 0.6);
+        }
 
-        @media (min-width: 768px) {
-            .video-container { width: 85vw; padding: 10px; border-radius: 32px; }
-            .video-content { border-radius: 24px; }
-            .video-content video { border-radius: 22px; }
+        .play-btn { width: 85px; height: 85px; }
+        .skip-btn { width: 55px; height: 55px; }
+        .control-btn svg { fill: currentColor; width: 45%; height: 45%; }
+
+        @media (max-width: 640px) {
+            .video-container { border-radius: 40px; width: 92vw; padding: 6px; }
+            .play-btn { width: 70px; height: 70px; }
+            .skip-btn { width: 45px; height: 45px; }
         }
     </style>
 </head>
@@ -138,22 +147,19 @@
 
     <div class="video-container" id="videoContainer">
         <div class="video-content">
-            <video id="mainVideo" muted playsinline>
+            <video id="mainVideo" muted playsinline loop>
                 <source src="https://image2url.com/r2/default/videos/1770011487986-c14c73dd-4250-41f3-9f5c-cc4bd2749ab4.mp4" type="video/mp4">
             </video>
             
             <div class="controls-overlay" id="controlsOverlay">
-                <!-- กรอถอยหลัง -->
-                <div class="control-btn skip-btn" id="rewindBtn">
+                <div class="control-btn skip-btn" id="rewindBtn" title="Back 10s">
                     <svg viewBox="0 0 24 24"><path d="M12.5 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1.5 11h1v-4h-1v4zm2.5-4v4h3v-4h-3z"/></svg>
                 </div>
-                <!-- ปุ่มเล่น/หยุด -->
                 <div class="control-btn play-btn" id="playBtnUI">
                     <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </div>
-                <!-- กรอไปข้างหน้า -->
-                <div class="control-btn skip-btn" id="forwardBtn">
-                    <svg viewBox="0 0 24 24"><path d="M11.5 3c4.97 0 9 4.03 9 9H23l-3.89 3.89-.07.14L15 12h3c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.93 0 3.68-.79-4.94-2.06l1.42 1.42C15.73 19.99 13.49 21 11 21c-4.97 0-9-4.03-9-9s4.03-9 9-9zm1.5 11h-1v-4h1v4zm-2.5-4v4h-3v-4h3z"/></svg>
+                <div class="control-btn skip-btn" id="forwardBtn" title="Forward 10s">
+                    <svg viewBox="0 0 24 24"><path d="M11.5 3c4.97 0 9 4.03 9 9H23l-3.89 3.89-.07.14L15 12h3c0-3.87-3.13-7-7-7s-7 3.13-7 7 3.13 7 7 7c1.93 0 3.68-.79 4.94-2.06l1.42 1.42C15.73 19.99 13.49 21 11 21c-4.97 0-9-4.03-9-9s4.03-9 9-9zm1.5 11h-1v-4h1v4zm-2.5-4v4h-3v-4h3z"/></svg>
                 </div>
             </div>
         </div>
@@ -161,7 +167,7 @@
 
     <script>
         const canvas = document.getElementById('vineCanvas');
-        const ctx = canvas.getContext('2d', { alpha: false });
+        const ctx = canvas.getContext('2d', { alpha: true });
         const video = document.getElementById('mainVideo');
         const container = document.getElementById('videoContainer');
         const playIcon = document.getElementById('playIcon');
@@ -172,6 +178,28 @@
         let fireflies = [];
         let globalTime = 0;
 
+        // --- Perlin Noise ---
+        class PerlinNoise {
+            constructor() {
+                this.p = [];
+                for (let i = 0; i < 512; i++) this.p[i] = Math.floor(Math.random() * 256);
+            }
+            fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
+            lerp(t, a, b) { return a + t * (b - a); }
+            grad(hash, x) {
+                const h = hash & 15;
+                const grad = 1 + (h & 7);
+                return ((h & 8) ? -grad : grad) * x;
+            }
+            noise(x) {
+                const X = Math.floor(x) & 255;
+                x -= Math.floor(x);
+                const u = this.fade(x);
+                return this.lerp(u, this.grad(this.p[X], x), this.grad(this.p[X + 1], x - 1)) * 0.5 + 0.5;
+            }
+        }
+        const perlin = new PerlinNoise();
+
         function initEvents() {
             document.body.addEventListener('click', (e) => {
                 if (e.target.closest('.control-btn')) return;
@@ -179,33 +207,29 @@
             });
 
             document.getElementById('playBtnUI').addEventListener('click', (e) => {
-                e.stopPropagation();
+                e.stopPropagation(); 
                 togglePlay();
             });
 
             const showUI = () => {
-                if (!video.paused && !video.ended) {
-                    container.classList.add('show-ui');
-                    clearTimeout(uiTimeout);
+                container.classList.add('show-ui');
+                clearTimeout(uiTimeout);
+                // เมื่อวิดีโอเล่นอยู่ ให้ตั้งเวลาเฟดหายไปเอง
+                if (!video.paused) {
                     uiTimeout = setTimeout(() => {
-                        if (!video.paused) container.classList.remove('show-ui');
-                    }, 2500);
+                        container.classList.remove('show-ui');
+                    }, 2000);
                 }
             };
-            
+
             window.addEventListener('mousemove', showUI);
             window.addEventListener('touchstart', showUI);
 
             document.getElementById('rewindBtn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                video.currentTime -= 10;
-                showUI();
+                e.stopPropagation(); video.currentTime -= 10; showUI();
             });
-
             document.getElementById('forwardBtn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                video.currentTime += 10;
-                showUI();
+                e.stopPropagation(); video.currentTime += 10; showUI();
             });
 
             video.addEventListener('ended', () => {
@@ -217,15 +241,17 @@
 
         function togglePlay() {
             if (video.ended) video.currentTime = 0;
+            
             if (video.paused) {
                 video.play();
                 container.classList.add('is-playing');
+                // ลบคลาส show-ui ทันทีที่กดเล่น เพื่อให้ UI หายไปเลย
+                container.classList.remove('show-ui');
+                clearTimeout(uiTimeout);
                 updatePlayIcon(true);
                 
-                // เมื่อกดเล่น ให้ระเบิดเถาวัลย์ออกมาทันที
-                for(let i=0; i<6; i++) {
-                    setTimeout(spawnFromVideo, i * 150);
-                }
+                // ระเบิดเถาวัลย์ออกมาล้อมกรอบ
+                for(let i=0; i<12; i++) setTimeout(() => spawnFromVideo(true), i * 100);
             } else {
                 video.pause();
                 container.classList.remove('is-playing');
@@ -250,31 +276,22 @@
 
         function initStars() {
             stars = [];
-            const count = window.innerWidth < 768 ? 40 : 120;
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < 150; i++) {
                 stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 1.5,
-                    opacity: Math.random() * 0.7,
-                    phase: Math.random() * Math.PI * 2,
-                    speed: 0.0005 + Math.random() * 0.001
+                    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5, opacity: Math.random() * 0.7,
+                    phase: Math.random() * Math.PI * 2, speed: 0.0008
                 });
             }
         }
 
         function initFireflies() {
             fireflies = [];
-            const count = window.innerWidth < 768 ? 15 : 30;
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < 30; i++) {
                 fireflies.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    s: Math.random() * 1.8 + 0.6,
-                    vx: (Math.random() - 0.5) * 0.4,
-                    vy: (Math.random() - 0.5) * 0.4,
-                    offset: Math.random() * 5000,
-                    color: Math.random() > 0.4 ? '#fde047' : '#fff'
+                    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                    s: Math.random() * 2 + 0.5, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4,
+                    offset: Math.random() * 5000, color: '#38bdf8'
                 });
             }
         }
@@ -283,227 +300,184 @@
         const vineColors = ['#0a1a1a', '#0f2626', '#134e4a'];
 
         class Vine {
-            constructor(x, y, baseAngle, width) {
-                this.x = x;
-                this.y = y;
-                this.baseAngle = baseAngle;
-                this.angle = baseAngle;
-                this.startWidth = width;
-                const isMobile = window.innerWidth < 768;
-                this.maxLen = Math.random() * (isMobile ? 120 : 180) + 100; 
+            constructor(x, y, baseAngle, width, maxLenFactor = 1.0, generation = 0) {
+                this.x = x; this.y = y; this.baseAngle = baseAngle; this.angle = baseAngle;
+                this.startWidth = width; this.generation = generation;
+                this.maxLen = (Math.random() * 180 + 160) * maxLenFactor;
                 this.curLen = 0;
-                
-                this.points = [{
-                    x: x, 
-                    y: y, 
-                    w: width, 
-                    angle: baseAngle
-                }];
-                
+                this.points = [{ x, y, w: width, angle: baseAngle }];
                 this.color = vineColors[Math.floor(Math.random() * vineColors.length)];
                 this.opacity = 0;
                 this.state = 'growing';
                 this.waitTimer = 0;
-                this.maxWait = 8000 + Math.random() * 6000; 
-                this.leaves = [];
-                this.flowers = [];
-                this.noiseOffset = Math.random() * 5000;
-                this.windSense = 0.15 + Math.random() * 0.1;
+                this.maxWait = 8000 + Math.random() * 8000;
+                this.leaves = []; this.flowers = [];
+                this.noiseOffset = Math.random() * 10000;
+                this.noiseScale = 0.012;
+                this.growthSpeed = 1.0 + Math.random() * 0.5;
+                this.gravity = 0.0006;
+                this.windSense = 0.18 + Math.random() * 0.1;
+                this.windPhase = Math.random() * 10;
             }
 
             update() {
                 if (this.state === 'growing') {
-                    if (this.opacity < 0.8) this.opacity += 0.03; 
+                    if (this.opacity < 0.8) this.opacity += 0.04;
                     if (this.curLen < this.maxLen) {
-                        let noise = Math.sin(this.curLen * 0.03 + this.noiseOffset) * 0.2;
-                        this.angle = this.baseAngle + noise;
-                        const speed = 0.9 + Math.sin(this.curLen * 0.05) * 0.3;
-                        this.x += Math.cos(this.angle) * speed;
-                        this.y += Math.sin(this.angle) * speed;
+                        const noiseVal = perlin.noise(this.curLen * this.noiseScale + this.noiseOffset);
+                        this.angle += (noiseVal - 0.5) * 0.45 + this.gravity * (this.curLen * 0.06);
+                        
+                        const step = this.growthSpeed;
+                        this.x += Math.cos(this.angle) * step;
+                        this.y += Math.sin(this.angle) * step;
 
-                        let currentW = this.startWidth * (1 - (this.curLen / this.maxLen) * 0.85);
-                        this.points.push({
-                            x: this.x, 
-                            y: this.y, 
-                            w: currentW, 
-                            angle: this.angle
-                        });
-                        this.curLen++;
+                        let currentW = this.startWidth * Math.pow(1 - (this.curLen / this.maxLen), 0.75);
+                        this.points.push({ x: this.x, y: this.y, w: currentW, angle: this.angle });
+                        this.curLen += step;
 
-                        if (this.curLen % 20 === 0) {
-                            if (Math.random() > 0.1) this.addLeaf(this.points.length - 1);
-                            if (Math.random() > 0.8) this.addFlower(this.points.length - 1);
-                        }
-                    } else {
-                        this.state = 'waiting';
-                    }
-                } else if (this.state === 'waiting') {
-                    this.waitTimer++;
-                    if (this.waitTimer > this.maxWait) this.state = 'fading';
+                        if (this.generation < 1 && this.curLen > 80 && Math.random() > 0.985) this.spawnBranch();
+                        if (Math.random() > 0.92) this.addLeaf(this.points.length - 1);
+                        if (this.generation === 0 && Math.random() > 0.997) this.addFlower(this.points.length - 1);
+                    } else { this.state = 'living'; }
+                } else if (this.state === 'living') {
+                    if (++this.waitTimer > this.maxWait) this.state = 'fading';
                 } else if (this.state === 'fading') {
-                    this.opacity -= 0.003;
+                    this.opacity -= 0.005;
                     if (this.opacity <= 0) return true;
                 }
                 return false;
             }
 
+            spawnBranch() {
+                const p = this.points[this.points.length - 1];
+                const branchAngle = this.angle + (Math.random() - 0.5) * 1.8;
+                vines.push(new Vine(p.x, p.y, branchAngle, p.w * 0.75, 0.5, this.generation + 1));
+            }
+
             addLeaf(pIdx) {
                 const side = Math.random() > 0.5 ? 1 : -1;
                 this.leaves.push({
-                    pIdx: pIdx,
-                    angle: (Math.PI / 2.5) * side,
-                    size: 0,
-                    targetSize: Math.random() * 7 + 3,
+                    pIdx, angle: (Math.PI / 2.3) * side, size: 0,
+                    targetSize: Math.random() * 7 + 4,
                     color: leafColors[Math.floor(Math.random() * leafColors.length)],
+                    jitter: Math.random() * 5
                 });
             }
 
             addFlower(pIdx) {
-                this.flowers.push({
-                    pIdx: pIdx,
-                    size: 0,
-                    targetSize: Math.random() * 5 + 3,
-                    rot: Math.random() * Math.PI * 2
-                });
+                this.flowers.push({ pIdx, size: 0, targetSize: Math.random() * 6 + 4, rot: Math.random() * Math.PI * 2 });
             }
 
             draw() {
                 if (this.opacity <= 0) return;
                 ctx.globalAlpha = this.opacity;
-                const timeFactor = globalTime * 0.0007;
+                const windTime = globalTime * 0.0012;
 
-                if (this.points.length > 1) {
-                    ctx.lineCap = 'round';
-                    ctx.lineWidth = this.points[0].w;
-                    ctx.strokeStyle = this.color;
-                    ctx.beginPath();
-                    for (let j = 0; j < this.points.length; j++) {
+                if (this.points.length > 3) {
+                    ctx.lineCap = 'round'; ctx.strokeStyle = this.color; ctx.beginPath();
+                    ctx.moveTo(this.points[0].x, this.points[0].y);
+                    for (let j = 1; j < this.points.length - 2; j++) {
                         const p = this.points[j];
+                        const nextP = this.points[j+1];
                         const ratio = j / this.points.length;
-                        const wind = Math.sin(timeFactor + j * 0.05 + this.noiseOffset) * (ratio * ratio * 15 * this.windSense);
-                        const wx = p.x + wind * Math.cos(p.angle + 1.57);
-                        const wy = p.y + wind * Math.sin(p.angle + 1.57);
-                        if (j === 0) ctx.moveTo(wx, wy);
-                        else ctx.lineTo(wx, wy);
+                        const sway = Math.sin(windTime - j * 0.06 + this.windPhase) * (ratio * ratio * 40 * this.windSense);
+                        const midX = (p.x + nextP.x) / 2 + sway * Math.cos(p.angle + 1.57);
+                        const midY = (p.y + nextP.y) / 2 + sway * Math.sin(p.angle + 1.57);
+                        ctx.lineWidth = p.w;
+                        ctx.quadraticCurveTo(p.x + sway * Math.cos(p.angle + 1.57), p.y + sway * Math.sin(p.angle + 1.57), midX, midY);
                     }
                     ctx.stroke();
                 }
 
                 this.leaves.forEach(l => {
                     const p = this.points[l.pIdx];
+                    if (!p) return;
                     const ratio = l.pIdx / this.points.length;
-                    const wind = Math.sin(timeFactor + l.pIdx * 0.05 + this.noiseOffset) * (ratio * ratio * 15 * this.windSense);
-                    const wx = p.x + wind * Math.cos(p.angle + 1.57);
-                    const wy = p.y + wind * Math.sin(p.angle + 1.57);
-
-                    if (this.state === 'growing' && l.size < l.targetSize) l.size += 0.15;
+                    const sway = Math.sin(windTime - l.pIdx * 0.06 + this.windPhase) * (ratio * ratio * 40 * this.windSense);
+                    if (this.state !== 'fading' && l.size < l.targetSize) l.size += 0.25;
                     ctx.save();
-                    ctx.translate(wx, wy);
-                    ctx.rotate(p.angle + l.angle);
+                    ctx.translate(p.x + sway * Math.cos(p.angle + 1.57), p.y + sway * Math.sin(p.angle + 1.57));
+                    ctx.rotate(p.angle + l.angle + Math.sin(globalTime * 0.006 + l.jitter) * 0.12);
                     const s = l.size;
-                    ctx.beginPath();
-                    ctx.moveTo(0, 0);
-                    ctx.bezierCurveTo(-s, -s, -s * 1.5, s * 0.5, 0, s);
+                    ctx.beginPath(); ctx.moveTo(0, 0); 
+                    ctx.bezierCurveTo(-s, -s, -s * 1.5, s * 0.5, 0, s); 
                     ctx.bezierCurveTo(s * 1.5, s * 0.5, s, -s, 0, 0);
-                    ctx.fillStyle = l.color;
-                    ctx.fill();
+                    ctx.fillStyle = l.color; ctx.fill();
                     ctx.restore();
                 });
 
                 this.flowers.forEach(f => {
                     const p = this.points[f.pIdx];
+                    if (!p) return;
                     const ratio = f.pIdx / this.points.length;
-                    const wind = Math.sin(timeFactor + f.pIdx * 0.05 + this.noiseOffset) * (ratio * ratio * 15 * this.windSense);
-                    const wx = p.x + wind * Math.cos(p.angle + 1.57);
-                    const wy = p.y + wind * Math.sin(p.angle + 1.57);
-
-                    if (this.state === 'growing' && f.size < f.targetSize) f.size += 0.1;
+                    const sway = Math.sin(windTime - f.pIdx * 0.06 + this.windPhase) * (ratio * ratio * 40 * this.windSense);
+                    if (this.state !== 'fading' && f.size < f.targetSize) f.size += 0.15;
                     ctx.save();
-                    ctx.translate(wx, wy);
-                    ctx.rotate(f.rot + globalTime * 0.001);
-                    ctx.fillStyle = "#fff";
+                    ctx.translate(p.x + sway * Math.cos(p.angle + 1.57), p.y + sway * Math.sin(p.angle + 1.57));
+                    ctx.rotate(f.rot + globalTime * 0.0008);
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.98)";
                     for (let n = 0; n < 5; n++) {
                         ctx.rotate((Math.PI * 2) / 5);
-                        ctx.beginPath();
-                        ctx.ellipse(f.size * 1.3, 0, f.size, f.size * 0.7, 0, 0, Math.PI * 2);
-                        ctx.fill();
+                        ctx.beginPath(); ctx.ellipse(f.size * 1.3, 0, f.size, f.size * 0.7, 0, 0, Math.PI * 2); ctx.fill();
                     }
-                    ctx.beginPath(); ctx.arc(0, 0, f.size * 0.6, 0, Math.PI * 2);
-                    ctx.fillStyle = "#facc15"; ctx.fill();
+                    ctx.beginPath(); ctx.arc(0, 0, f.size * 0.6, 0, Math.PI * 2); ctx.fillStyle = "#fcd34d"; ctx.fill();
                     ctx.restore();
                 });
             }
         }
 
-        function spawnFromVideo() {
-            // จะงอกใหม่เฉพาะตอนที่วิดีโอกำลังเล่นอยู่เท่านั้น
-            if (video.paused || video.ended) return;
-            if (vines.length > 35) return; 
+        function spawnFromVideo(force = false) {
+            if (!force && (video.paused || video.ended)) return;
+            if (vines.length > 45) return; 
 
             const rect = container.getBoundingClientRect();
-            const side = Math.floor(Math.random() * 4);
+            const side = Math.floor(Math.random() * 4); 
             let startX, startY, startAngle;
+            const spread = (Math.random() - 0.5) * 1.5;
 
-            const offsetAngle = (Math.random() - 0.5) * 0.8;
-            if (side === 0) { // ด้านบน
-                startX = rect.left + Math.random() * rect.width; startY = rect.top; startAngle = -Math.PI/2 + offsetAngle;
-            } else if (side === 1) { // ด้านขวา
-                startX = rect.right; startY = rect.top + Math.random() * rect.height; startAngle = offsetAngle;
-            } else if (side === 2) { // ด้านล่าง
-                startX = rect.left + Math.random() * rect.width; startY = rect.bottom; startAngle = Math.PI/2 + offsetAngle;
-            } else { // ด้านซ้าย
-                startX = rect.left; startY = rect.top + Math.random() * rect.height; startAngle = Math.PI + offsetAngle;
+            if (side === 0) { // บน
+                startX = rect.left + Math.random() * rect.width; startY = rect.top + 8; startAngle = -Math.PI/2 + spread;
+            } else if (side === 1) { // ขวา
+                startX = rect.right - 8; startY = rect.top + Math.random() * rect.height; startAngle = spread;
+            } else if (side === 2) { // ล่าง
+                startX = rect.left + Math.random() * rect.width; startY = rect.bottom - 8; startAngle = Math.PI/2 + spread;
+            } else { // ซ้าย
+                startX = rect.left + 8; startY = rect.top + Math.random() * rect.height; startAngle = Math.PI + spread;
             }
-            vines.push(new Vine(startX, startY, startAngle, 1.2));
-        }
-
-        function drawStars() {
-            stars.forEach(s => {
-                const twinkle = s.opacity * (0.3 + Math.sin(globalTime * s.speed + s.phase) * 0.7);
-                ctx.globalAlpha = twinkle;
-                ctx.fillStyle = '#fff';
-                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
-            });
-        }
-
-        function updateFireflies() {
-            fireflies.forEach(f => {
-                f.x += f.vx + Math.sin(globalTime * 0.0005 + f.offset) * 0.5;
-                f.y += f.vy + Math.cos(globalTime * 0.0005 + f.offset) * 0.5;
-                if (f.x < -30) f.x = canvas.width + 30; else if (f.x > canvas.width + 30) f.x = -30;
-                if (f.y < -30) f.y = canvas.height + 30; else if (f.y > canvas.height + 30) f.y = -30;
-                
-                const glow = 0.4 + Math.sin(globalTime * 0.0025 + f.offset) * 0.6;
-                ctx.globalAlpha = glow;
-                ctx.fillStyle = f.color;
-                ctx.beginPath(); ctx.arc(f.x, f.y, f.s, 0, Math.PI * 2); ctx.fill();
-                ctx.globalAlpha = glow * 0.35;
-                ctx.beginPath(); ctx.arc(f.x, f.y, f.s * 5, 0, Math.PI * 2); ctx.fill();
-            });
+            vines.push(new Vine(startX, startY, startAngle, 1.5));
         }
 
         function animate(time) {
             globalTime = time;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#01040a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            stars.forEach(s => {
+                ctx.globalAlpha = s.opacity * (0.3 + Math.sin(time * s.speed + s.phase) * 0.7);
+                ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
+            });
+
+            fireflies.forEach(f => {
+                f.x += f.vx + Math.sin(time * 0.0006 + f.offset) * 0.5;
+                f.y += f.vy + Math.cos(time * 0.0006 + f.offset) * 0.5;
+                if (f.x < -30) f.x = canvas.width + 30; else if (f.x > canvas.width + 30) f.x = -30;
+                if (f.y < -30) f.y = canvas.height + 30; else if (f.y > canvas.height + 30) f.y = -30;
+                ctx.globalAlpha = 0.4 + Math.sin(time * 0.003 + f.offset) * 0.6;
+                ctx.fillStyle = f.color; ctx.beginPath(); ctx.arc(f.x, f.y, f.s, 0, Math.PI * 2); ctx.fill();
+            });
+
             ctx.globalAlpha = 1;
-            ctx.fillStyle = '#01040a'; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            drawStars();
-            updateFireflies();
             for (let i = vines.length - 1; i >= 0; i--) {
-                const shouldDelete = vines[i].update();
-                vines[i].draw();
-                if (shouldDelete) vines.splice(i, 1);
+                if (vines[i].update()) vines.splice(i, 1);
+                else vines[i].draw();
             }
             requestAnimationFrame(animate);
         }
 
         window.onload = () => {
-            resize();
-            initEvents();
-            animate(0);
-            
-            // ตั้งค่าการงอกใหม่เป็นระยะ แต่จะงอกจริงเฉพาะตอนเล่นคลิป (เช็คในฟังก์ชัน spawnFromVideo)
-            setInterval(spawnFromVideo, 2500); 
+            resize(); initEvents(); animate(0);
+            for(let i=0; i<8; i++) setTimeout(() => spawnFromVideo(true), i * 250);
+            setInterval(() => spawnFromVideo(false), 2200); 
         };
     </script>
 </body>
