@@ -80,7 +80,7 @@
             opacity: 0.9;
         }
 
-        /* ส่วนควบคุมวิดีโอ - ตั้งค่าให้หายไปอย่างสมบูรณ์ */
+        /* ส่วนควบคุมวิดีโอ */
         .controls-overlay {
             position: absolute;
             inset: 0;
@@ -95,14 +95,12 @@
             pointer-events: auto;
         }
 
-        /* เมื่อวิดีโอเล่น และไม่มีคลาส show-ui ให้หายไปเลย */
         .video-container.is-playing:not(.show-ui) .controls-overlay {
             opacity: 0;
             background: rgba(0, 0, 0, 0);
             pointer-events: none;
         }
 
-        /* ปรับระดับความชัดเมื่อโชว์ UI */
         .video-container.show-ui .controls-overlay {
             opacity: 1 !important;
             background: rgba(0, 0, 0, 0.5) !important;
@@ -147,7 +145,8 @@
 
     <div class="video-container" id="videoContainer">
         <div class="video-content">
-            <video id="mainVideo" muted playsinline loop>
+            <!-- นำ attribute 'muted' ออกเพื่อให้มีเสียง -->
+            <video id="mainVideo" playsinline loop>
                 <source src="https://image2url.com/r2/default/videos/1770011487986-c14c73dd-4250-41f3-9f5c-cc4bd2749ab4.mp4" type="video/mp4">
             </video>
             
@@ -201,7 +200,9 @@
         const perlin = new PerlinNoise();
 
         function initEvents() {
+            // คลิกที่พื้นหลังหรือตัววิดีโอเพื่อ Play/Pause
             document.body.addEventListener('click', (e) => {
+                // ถ้าคลิกโดนปุ่มควบคุมย่อย ไม่ต้องรันซ้ำ
                 if (e.target.closest('.control-btn')) return;
                 togglePlay();
             });
@@ -214,11 +215,10 @@
             const showUI = () => {
                 container.classList.add('show-ui');
                 clearTimeout(uiTimeout);
-                // เมื่อวิดีโอเล่นอยู่ ให้ตั้งเวลาเฟดหายไปเอง
                 if (!video.paused) {
                     uiTimeout = setTimeout(() => {
                         container.classList.remove('show-ui');
-                    }, 2000);
+                    }, 2500);
                 }
             };
 
@@ -239,19 +239,23 @@
             });
         }
 
-        function togglePlay() {
+        async function togglePlay() {
             if (video.ended) video.currentTime = 0;
             
             if (video.paused) {
-                video.play();
-                container.classList.add('is-playing');
-                // ลบคลาส show-ui ทันทีที่กดเล่น เพื่อให้ UI หายไปเลย
-                container.classList.remove('show-ui');
-                clearTimeout(uiTimeout);
-                updatePlayIcon(true);
-                
-                // ระเบิดเถาวัลย์ออกมาล้อมกรอบ
-                for(let i=0; i<12; i++) setTimeout(() => spawnFromVideo(true), i * 100);
+                try {
+                    // การเรียก play() หลังจาก user interaction (click) จะทำให้เสียงดังได้ปกติ
+                    await video.play();
+                    container.classList.add('is-playing');
+                    container.classList.remove('show-ui');
+                    clearTimeout(uiTimeout);
+                    updatePlayIcon(true);
+                    
+                    // เอฟเฟกต์เถาวัลย์
+                    for(let i=0; i<12; i++) setTimeout(() => spawnFromVideo(true), i * 100);
+                } catch (err) {
+                    console.error("Playback failed:", err);
+                }
             } else {
                 video.pause();
                 container.classList.remove('is-playing');
@@ -475,8 +479,14 @@
         }
 
         window.onload = () => {
-            resize(); initEvents(); animate(0);
+            resize(); 
+            initEvents(); 
+            animate(0);
+            
+            // Spawn เถาวัลย์เริ่มต้น
             for(let i=0; i<8; i++) setTimeout(() => spawnFromVideo(true), i * 250);
+            
+            // Loop spawn อัตโนมัติเมื่อวิดีโอเล่น
             setInterval(() => spawnFromVideo(false), 2200); 
         };
     </script>
